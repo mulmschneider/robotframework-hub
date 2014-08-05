@@ -4,8 +4,11 @@ from kwdb import KeywordTable
 from flask import current_app
 import blueprints
 
+
 class RobotHub(object):
+
     """Robot hub - website for REST and HTTP access to robot files"""
+
     def __init__(self):
 
         # N.B. this seems to take < 200ms to load up a
@@ -35,7 +38,11 @@ class RobotHub(object):
 
     def start(self):
         """Start the app"""
-        self.app.run(port=self.args.port, debug=self.args.debug)
+        if self.args.serve:
+            listen = '0.0.0.0'
+        else:
+            listen = '127.0.0.1'
+        self.app.run(port=self.args.port, debug=self.args.debug, host=listen)
 
     def _root(self):
         return flask.redirect(flask.url_for('dashboard.home'))
@@ -53,4 +60,3 @@ class RobotHub(object):
                 self.kwdb.add(path)
             except Exception as e:
                 print "Error adding keywords in %s: %s" % (path, str(e))
-
